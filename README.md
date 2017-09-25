@@ -27,3 +27,7 @@ git checkout hash_number
 git checkout ^HEAD
 # ^ that's from memory, may or may not work lol
 ```
+# Structure
+- djikstra folder to be added for naive algo implementation
+- ds for datastructures and graphrep
+- report for documentation type stuff for submission
