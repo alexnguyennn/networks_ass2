@@ -3,3 +3,4 @@ if __name__ == "__main__":
     print("test")
     print("not saving passphrase whyy")
     print("try again")
+    print("try again")
