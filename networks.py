@@ -79,34 +79,35 @@ def ShortestHopPath(graph, source):
 	pred = {}
 	nodes = set(graph.nodes)
 
-	while True: 
-		min_node = None
-		# grab node with min delay
+	# while nodes not empty
+	while nodes: 
+		curr_node = None
+		# grab neighbour node with lowest cost path
 		for n in nodes:
 			if n in visited:
-				if min_node is None:
-					min_node = n
-				elif visited[n] < visited[min_node]:
-					min_node = n
-		# all nodes visited, exit djikstras
-		if min_node is None:
-				break
+				# init curr = src node
+				if curr_node is None:
+					curr_node = n
+				# update lowest cost neighbour
+				elif visited[n] < visited[curr_node]:
+					curr_node = n
+		if curr_node is None:
+			break
 
-		# grab min_node delay + remove min_node from set
-		nodes.remove(min_node)
-		curr_delay = visited[min_node]
+		# remove curr node, grab curr delay so far
+		nodes.remove(curr_node)
+		curr_delay = visited[curr_node]
 
-		# edge relaxation
-		for e in graph.edges[min_node]:
-			delay = curr_delay + graph.delays[(min_node, e)]
-			# if link delay < known link delay, update new path
-			if e not in visited or delay < visited[e]:
+		# check connected edges
+		for e in graph.edges[curr_node]:
+			delay = curr_delay + 1
+			# if edge !visited, update new path
+			if e not in visited:
 				visited[e] = delay
-				pred[e] = min_node
+				pred[e] = curr_node
 
-		print("CURRENT TREE\n{}\n".format(pred))
-
-	print("SHORTEST HOP PATH FROM {} TO EACH NODE\n{}".format(source, visited))
+	print("MST {}".format(pred))
+	print("SHP FROM {} {}\n".format(source, visited))
 	return visited, pred
 
 """
@@ -129,7 +130,7 @@ def ShortestDelayPath(graph, source):
 					min_node = n
 		# all nodes visited, exit djikstras
 		if min_node is None:
-				break
+			break
 
 		# grab min_node delay + remove min_node from set
 		nodes.remove(min_node)
@@ -143,9 +144,9 @@ def ShortestDelayPath(graph, source):
 				visited[e] = delay
 				pred[e] = min_node
 
-		print("CURRENT TREE\n{}\n".format(pred))
 
-	print("SHORTEST DELAY PATH FROM {} TO EACH NODE\n{}".format(source, visited))
+	print("MST {}".format(pred))
+	print("SDP FROM {} {}\n".format(source, visited))
 	return visited, pred
 
 """
@@ -172,10 +173,13 @@ if __name__ == '__main__':
 		# start virtual connection requests
 		r.startRequests()
 
-		# NOT YET FINISHEDs
-		#SHP = ShortestHopPath(r.graph, 'A')
-
-		SDP = ShortestDelayPath(r.graph, 'A')
+		# Select scheme
+		if ROUTING_SCHEME == "SHP":
+			print("[ SCHEME: SHORTEST HOP PATH ]")
+			SHP = ShortestHopPath(r.graph, 'A')
+		elif ROUTING_SCHEME == "SDP":
+			print("[ SCHEME: SHORTEST DELAY PATH ]")
+			SDP = ShortestDelayPath(r.graph, 'A')
 
 
 
