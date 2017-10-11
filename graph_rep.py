@@ -29,3 +29,17 @@ class Graph:
         # init link capacity
         self.cap[(from_n, to_n)] = capacity
         self.cap[(to_n, from_n)] = capacity
+
+    def add_circuit(circuit_edges):
+        # TODO fill out. returns boolean based on success/blocked
+        # maybe return a unique id instead?
+        pass
+
+    def remove_circuit(circuit_edges):
+        # TODO fill out. returns boolean based on success/blocked
+        # maybe pass in unique id instead?
+        pass
+
+    def parse_topology(file_path):
+        # TODO fill in graph init from file, make __init__ call this
+        pass

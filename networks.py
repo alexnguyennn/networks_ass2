@@ -1,20 +1,28 @@
 #!/usr/bin/python3
 
 import sys
-from algos import shortest_delay_mst, shortest_hop_mst
-from graphRep import Graph
-"""
-Routing Performance Program
-"""
+from pathing_algorithms import shortest_delay_mst, shortest_hop_mst
+from graph_rep import Graph
+# NOTE: empty classes atm
+from routing_timer import RoutingTimer
+from virtual_circuit import VirtualCircuit
+from statistics_manager import StatisticsManager
 
 
 class RoutingPerf:
+    """
+    Routing Performance Program
+    """
+
     def __init__(self, g, top, work):
         self.graph = g
         self.topology = top
         self.workload = work
+        # TODO: track virtualcircuits in flight somehow, implement timer start/stop
+        # variables (queue of connections, network/circuit mode etc), parseWorkload()
 
     # init graph topology: routers, delay, capacity
+
     def init_topology(self):
         f = open(self.topology, "r")
         data = f.readlines()
@@ -30,6 +38,7 @@ class RoutingPerf:
             self.graph.add_edge(x, y, int(delay), int(cap))
 
     # init VC requests
+
     def start_requests(self):
         return None
 
