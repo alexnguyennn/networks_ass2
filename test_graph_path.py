@@ -5,6 +5,13 @@ from graph_rep import Graph
 
 
 @pytest.fixture
+def graph_topology():
+    graph = Graph()
+    graph.parse_topology('./topology.txt')
+    return graph
+
+
+@pytest.fixture
 def graph():
     graph = Graph()
     cur_node = 'a'
@@ -32,6 +39,12 @@ def graph():
 
 
 def test_shortest_delay_path(graph):
+    result_path, result_delays = shortest_delay(graph, 'a', 'i')
+    assert result_path == ['a', 'c', 'd', 'g', 'i']
+    assert result_delays['i'] == 8
+
+
+def test_shortest_delay_txt_topology(graph):
     result_path, result_delays = shortest_delay(graph, 'a', 'i')
     assert result_path == ['a', 'c', 'd', 'g', 'i']
     assert result_delays['i'] == 8

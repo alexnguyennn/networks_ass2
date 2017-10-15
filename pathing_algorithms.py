@@ -3,6 +3,7 @@ import warnings
 import heapq
 
 
+# TODO modify to parametrise SHP/SDP
 def shortest_delay(graph, source, dest):
     vertices = UpdateablePriorityQueue([])
     dist = {}
