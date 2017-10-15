@@ -9,7 +9,7 @@ from virtual_circuit import VirtualCircuit
 from statistics_manager import StatisticsManager
 
 
-class RoutingPerf:
+class RoutingPerformance:
     """
     Routing Performance Program
     """
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         # grab argument objects
         NETWORK_SCHEME, ROUTING_SCHEME, TOPOLOGY_FILE, WORKLOAD_FILE, PACKET_RATE = sys.argv[
             1:]
-        r = RoutingPerf(graph, TOPOLOGY_FILE, WORKLOAD_FILE)
+        r = RoutingPerformance(graph, TOPOLOGY_FILE, WORKLOAD_FILE)
 
         # init nodes, links, delay and capacity values
         r.init_topology()
@@ -87,4 +87,4 @@ if __name__ == '__main__':
             SHP = shortest_hop_mst(r.graph, 'A')
         elif ROUTING_SCHEME == "SDP":
             print("[ SCHEME: SHORTEST DELAY PATH ]")
-            SDP = shortest_path_mst(r.graph, 'A')
+            SDP = shortest_delay_mst(r.graph, 'A')

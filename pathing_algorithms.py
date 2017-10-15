@@ -1,7 +1,40 @@
-def shortest_hop_mst(self, graph, source):
-    """
-    Shortest Hop Minimum spannign tree (SHP)
-    """
+import queue
+import warnings
+import heapq
+
+
+def shortest_delay(graph, source, dest):
+    vertices = UpdateablePriorityQueue([])
+    dist = {}
+    prev = {}
+    for vertex in graph.nodes:
+        dist[vertex] = float('inf')
+        prev[vertex] = None  # set previous for a vertex when possible
+        vertices.insert((vertex, dist[vertex]))
+    dist[source] = 0
+    vertices.update_priority((source, dist[source]))
+    while len(vertices) > 0:
+        # take lowest valued entries first; tuple (vertex, dist[vertex])
+        u, u_cur_delay = vertices.pop()
+        for neighbour_v in graph.edges[u]:
+            altered_delay = u_cur_delay + graph.delays[(u, neighbour_v)]
+            # if new altered cost is less than a current minimum dist TO a neighbour, update
+            if altered_delay < dist[neighbour_v]:
+                dist[neighbour_v] = altered_delay
+                prev[neighbour_v] = u
+                vertices.update_priority((neighbour_v, dist[neighbour_v]))
+    # calculate path, cost from source to dest:
+    u = dest
+    path = []
+    while u is not source:
+        path.insert(0, u)
+        u = prev[u]
+    path.insert(0, source)
+    return (path, dist)
+
+
+def shortest_hop_mst(graph, source):
+    """ Shortest Hop Minimum spannign tree (SHP) """
     # init visited = src, path, nodes
     visited = {source: 0}
     pred = {}
@@ -39,7 +72,7 @@ def shortest_hop_mst(self, graph, source):
     return visited, pred
 
 
-def shortest_delay_mst(self, graph, source):
+def shortest_delay_mst(graph, source):
     """
     Shortest Delay Path Minimum spanning tree algorithm (SDP)
     Returns visited array and pred
@@ -77,3 +110,36 @@ def shortest_delay_mst(self, graph, source):
     print("MST {}".format(pred))
     print("SDP FROM {} {}\n".format(source, visited))
     return visited, pred
+
+
+# assume - unique items; will throw warning if duplicate is added. Duplicates are both updated if found
+class UpdateablePriorityQueue:
+    def __init__(self, init_list):
+        self.heap_list = init_list
+        heapq.heapify(self.heap_list)
+
+    def __len__(self):
+        return len(self.heap_list)
+
+    def insert(self, item_tuple):
+        if (item_tuple in self.heap_list):
+            warnings.warn(
+                "tuple already exists; any updates will update both iterations",
+                UserWarning)
+        heapq.heappush(self.heap_list, item_tuple)
+
+    def pop(self):
+        return heapq.heappop(self.heap_list)
+
+    # input
+    def update_priority(self, item_tuple):
+        if len(item_tuple) > 2:
+            raise AttributeError('expected tuple in the form (item, value)')
+        update_flag = False
+        for t in self.heap_list:
+            if t[0] == item_tuple[0]:
+                self.heap_list.remove(t)
+                self.insert(item_tuple)
+                update_flag = True
+        if not update_flag:
+            warnings.warn("tuple not found - no update made", UserWarning)
