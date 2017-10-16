@@ -41,7 +41,7 @@ class Graph:
         pass
 
     def parse_topology(self, file_path):
-        f = open(self.file_path, "r")
+        f = open(file_path, "r")
         data = f.readlines()
         for line in data:
             line = line.split()

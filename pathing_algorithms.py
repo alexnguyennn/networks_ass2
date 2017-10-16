@@ -18,27 +18,21 @@ def shortest_delay(graph, source, dest):
         # take lowest valued entries first; tuple (vertex, dist[vertex])
         u, u_cur_delay = vertices.pop()
         for neighbour_v in graph.edges[u]:
+            if neighbour_v not in vertices:
+                continue # skip stuff not in queue anymore
             altered_delay = u_cur_delay + graph.delays[(u, neighbour_v)]
             # if new altered cost is less than a current minimum dist TO a neighbour, update
             if altered_delay < dist[neighbour_v]:
                 dist[neighbour_v] = altered_delay
                 prev[neighbour_v] = u
                 vertices.update_priority((neighbour_v, dist[neighbour_v]))
-    # calculate path, cost from source to dest:
-    u = dest
-    path = []
-    while u is not source:
-        path.insert(0, u)
-        u = prev[u]
-    path.insert(0, source)
-    return (path, dist)
+    return get_path_dist_tuple(dist, prev, dest)
 
-
-def shortest_hop_mst(graph, source):
+def shortest_hop_mst(graph, source, dest):
     """ Shortest Hop Minimum spannign tree (SHP) """
     # init visited = src, path, nodes
     visited = {source: 0}
-    pred = {}
+    pred = {source: None}
     nodes = set(graph.nodes)
 
     # while nodes not empty
@@ -70,17 +64,17 @@ def shortest_hop_mst(graph, source):
 
     print("MST {}".format(pred))
     print("SHP FROM {} {}\n".format(source, visited))
-    return visited, pred
+    return get_path_dist_tuple(visited, pred, dest)
 
 
-def shortest_delay_mst(graph, source):
+def shortest_delay_mst(graph, source, dest):
     """
     Shortest Delay Path Minimum spanning tree algorithm (SDP)
     Returns visited array and pred
     """
     # init visited = src, path, nodes
     visited = {source: 0}
-    pred = {}
+    pred = {source: None}
     nodes = set(graph.nodes)
 
     while True:
@@ -110,7 +104,17 @@ def shortest_delay_mst(graph, source):
 
     print("MST {}".format(pred))
     print("SDP FROM {} {}\n".format(source, visited))
-    return visited, pred
+    return get_path_dist_tuple(visited, pred, dest)
+    #return visited, pred
+
+def get_path_dist_tuple(distance_dict, prev_node_dict, dest):
+    # calculate path, cost from source to dest:
+    u = dest
+    path = []
+    while u is not None:
+        path.insert(0, u)
+        u = prev_node_dict[u]
+    return (path, distance_dict[dest])
 
 
 # assume - unique items; will throw warning if duplicate is added. Duplicates are both updated if found
@@ -121,6 +125,12 @@ class UpdateablePriorityQueue:
 
     def __len__(self):
         return len(self.heap_list)
+
+    def __contains__(self, vertex):
+        for item_tuple in self.heap_list:
+            if item_tuple[0] == vertex:
+                return True
+        return False
 
     def insert(self, item_tuple):
         if (item_tuple in self.heap_list):

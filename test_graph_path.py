@@ -5,10 +5,17 @@ from graph_rep import Graph
 
 
 @pytest.fixture
+def graph_topology_simple():
+    g = Graph()
+    g.parse_topology('./topology_simple.txt')
+    return g
+
+
+@pytest.fixture
 def graph_topology():
-    graph = Graph()
-    graph.parse_topology('./topology.txt')
-    return graph
+    g = Graph()
+    g.parse_topology('./topology.txt')
+    return g
 
 
 @pytest.fixture
@@ -41,10 +48,42 @@ def graph():
 def test_shortest_delay_path(graph):
     result_path, result_delays = shortest_delay(graph, 'a', 'i')
     assert result_path == ['a', 'c', 'd', 'g', 'i']
-    assert result_delays['i'] == 8
+    assert result_delays == 8
 
-
-def test_shortest_delay_txt_topology(graph):
-    result_path, result_delays = shortest_delay(graph, 'a', 'i')
+def test_shortest_delay_path_brian(graph):
+    result_path, result_delays = shortest_delay_mst(graph, 'a', 'i')
     assert result_path == ['a', 'c', 'd', 'g', 'i']
-    assert result_delays['i'] == 8
+    assert result_delays == 8
+
+
+def test_shortest_delay_txt_topology(graph_topology):
+    pass
+
+
+def test_shortest_delay_txt_topology_simple(graph_topology_simple):
+    result_path, result_delays = shortest_delay(graph_topology_simple, 'A',
+                                                'D')
+    assert result_path == ['A', 'C', 'D']
+    assert result_delays == 23
+    result_path, result_delays = shortest_delay(graph_topology_simple, 'B',
+                                                'C')
+    assert result_path == ['B', 'C']
+    assert result_delays == 20
+    result_path, result_delays = shortest_delay(graph_topology_simple, 'B',
+                                                'D')
+    assert result_path == ['B', 'C', 'D']
+    assert result_delays == 28
+
+def test_shortest_delay_txt_topology_simple_brian(graph_topology_simple):
+    result_path, result_delays = shortest_delay_mst(graph_topology_simple, 'A',
+                                                'D')
+    assert result_path == ['A', 'C', 'D']
+    assert result_delays == 23
+    result_path, result_delays = shortest_delay_mst(graph_topology_simple, 'B',
+                                                'C')
+    assert result_path == ['B', 'C']
+    assert result_delays == 20
+    result_path, result_delays = shortest_delay_mst(graph_topology_simple, 'B',
+                                                'D')
+    assert result_path == ['B', 'C', 'D']
+    assert result_delays == 28
