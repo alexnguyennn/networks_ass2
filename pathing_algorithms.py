@@ -2,9 +2,56 @@ import queue
 import warnings
 import heapq
 
+# assume - unique items; will throw warning if duplicate is added. Duplicates are both updated if found
+class UpdateablePriorityQueue:
+    def __init__(self, init_list):
+        self.heap_list = init_list
+        heapq.heapify(self.heap_list)
 
-# TODO modify to parametrise SHP/SDP
-def shortest_delay(graph, source, dest):
+    def __len__(self):
+        return len(self.heap_list)
+
+    def __contains__(self, vertex):
+        for item_tuple in self.heap_list:
+            if item_tuple[0] == vertex:
+                return True
+        return False
+
+    def insert(self, item_tuple):
+        if (item_tuple in self.heap_list):
+            warnings.warn(
+                "tuple already exists; any updates will update both iterations",
+                UserWarning)
+        heapq.heappush(self.heap_list, item_tuple)
+
+    def pop(self):
+        return heapq.heappop(self.heap_list)
+
+    # input
+    def update_priority(self, item_tuple):
+        if len(item_tuple) > 2:
+            raise AttributeError('expected tuple in the form (item, value)')
+        update_flag = False
+        for t in self.heap_list:
+            if t[0] == item_tuple[0]:
+                self.heap_list.remove(t)
+                self.insert(item_tuple)
+                update_flag = True
+        if not update_flag:
+            warnings.warn("tuple not found - no update made", UserWarning)
+
+
+# TODO: pathing
+def shortest_path(graph, source, dest, path_type='SDP'):
+    """
+    Find shortest path to dest node from source using 2 path_types:
+    Shortest Hop Path & Shortest Delay Path (specify with path_type)
+    Calculates dist{v} - holds minimum distance to each v
+    Follow chain of prev{v} to generate shortest path to dest node v
+
+    NOTE: does same as MST, but SHP/SDP modes are parameterised
+    Pseudocode Source: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    """
     vertices = UpdateablePriorityQueue([])
     dist = {}
     prev = {}
@@ -19,14 +66,23 @@ def shortest_delay(graph, source, dest):
         u, u_cur_delay = vertices.pop()
         for neighbour_v in graph.edges[u]:
             if neighbour_v not in vertices:
-                continue # skip stuff not in queue anymore
-            altered_delay = u_cur_delay + graph.delays[(u, neighbour_v)]
+               continue # skip stuff not in queue anymore
+            # in SHP, all delays are 1 (only counting link hops)
+            if path_type == 'SHP': 
+                added_delay = 1
+            elif path_type == 'SDP':
+                added_delay = graph.delays[(u, neighbour_v)] 
+            else:
+                raise ValueError("Invalid value for path_type to shortest_path")
+            altered_delay = u_cur_delay + added_delay
             # if new altered cost is less than a current minimum dist TO a neighbour, update
             if altered_delay < dist[neighbour_v]:
                 dist[neighbour_v] = altered_delay
                 prev[neighbour_v] = u
                 vertices.update_priority((neighbour_v, dist[neighbour_v]))
     return get_path_dist_tuple(dist, prev, dest)
+
+
 
 def shortest_hop_mst(graph, source, dest):
     """ Shortest Hop Minimum spannign tree (SHP) """
@@ -117,40 +173,3 @@ def get_path_dist_tuple(distance_dict, prev_node_dict, dest):
     return (path, distance_dict[dest])
 
 
-# assume - unique items; will throw warning if duplicate is added. Duplicates are both updated if found
-class UpdateablePriorityQueue:
-    def __init__(self, init_list):
-        self.heap_list = init_list
-        heapq.heapify(self.heap_list)
-
-    def __len__(self):
-        return len(self.heap_list)
-
-    def __contains__(self, vertex):
-        for item_tuple in self.heap_list:
-            if item_tuple[0] == vertex:
-                return True
-        return False
-
-    def insert(self, item_tuple):
-        if (item_tuple in self.heap_list):
-            warnings.warn(
-                "tuple already exists; any updates will update both iterations",
-                UserWarning)
-        heapq.heappush(self.heap_list, item_tuple)
-
-    def pop(self):
-        return heapq.heappop(self.heap_list)
-
-    # input
-    def update_priority(self, item_tuple):
-        if len(item_tuple) > 2:
-            raise AttributeError('expected tuple in the form (item, value)')
-        update_flag = False
-        for t in self.heap_list:
-            if t[0] == item_tuple[0]:
-                self.heap_list.remove(t)
-                self.insert(item_tuple)
-                update_flag = True
-        if not update_flag:
-            warnings.warn("tuple not found - no update made", UserWarning)
