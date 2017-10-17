@@ -47,11 +47,11 @@ if __name__ == '__main__':
             1:]
         r = RoutingPerformance(graph, TOPOLOGY_FILE, WORKLOAD_FILE)
 
-        # init nodes, links, delay and capacity values
-        r.init_topology()
+        # init nodes, links, delay and capacity values is done on creation
+        # it should also parseworkload and create queue above
 
         # test
-        r.show_graph()
+        r.graph.show_graph()
 
         # start virtual connection requests
         r.start_requests()

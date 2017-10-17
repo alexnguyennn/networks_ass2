@@ -30,14 +30,36 @@ class Graph:
         self.cap[(from_n, to_n)] = capacity
         self.cap[(to_n, from_n)] = capacity
 
-    def add_circuit(self, circuit_edges):
+    def add_connection(self, connection_path):
         # TODO fill out. returns boolean based on success/blocked
         # maybe return a unique id instead?
+        # for node in connection_path:
+        # 3.
         pass
+
 
     def remove_circuit(self, circuit_edges):
         # TODO fill out. returns boolean based on success/blocked
         # maybe pass in unique id instead?
+        # 4.
+        pass
+
+    def path_list_to_edges(self, path):
+        # TODO convert to list of edge tuples (from_n, to_n), helper for above methods
+        # nEdges = nNodes - 1
+        # 1.
+        pass
+
+    def get_edge_list_delays(edge_list):
+        """
+        Input: list of tuples (from_n, to_n)
+        Return list of delays corresponding to each tuple
+        """
+        #2.
+        pass
+
+    def get_edge_list_capacities(edge_list):
+        #3.
         pass
 
     def parse_topology(self, file_path):
