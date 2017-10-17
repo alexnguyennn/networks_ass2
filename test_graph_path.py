@@ -149,7 +149,6 @@ def test_shortest_hop_txt_topology_brian(graph_topology):
     assert result_path == ['A', 'H', 'G', 'O'] or result_path == ['A', 'H', 'F', 'O']
     assert result_hops == 3
 
-@pytest.mark.skip
 def test_shortest_hop_txt_topology(graph_topology):
     result_path, result_hops = shortest_path(graph_topology, 'D',
                                                 'N', path_type='SHP')
