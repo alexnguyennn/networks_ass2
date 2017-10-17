@@ -121,7 +121,6 @@ def test_shortest_delay_txt_topology_brian(graph_topology):
     assert result_delays == 235
 
 
-@pytest.mark.skip('improved doesn\'t work yet')
 def test_shortest_delay_txt_topology(graph_topology):
     result_path, result_delays = shortest_path(graph_topology, 'D',
                                                     'N', path_type='SDP')

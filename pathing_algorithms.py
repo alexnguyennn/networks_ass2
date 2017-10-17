@@ -3,6 +3,7 @@ import warnings
 import heapq
 
 # assume - unique items; will throw warning if duplicate is added. Duplicates are both updated if found
+# NOTE: make sure item_tuple is always in form of (priority, item)
 class UpdateablePriorityQueue:
     def __init__(self, init_list):
         self.heap_list = init_list
@@ -13,10 +14,11 @@ class UpdateablePriorityQueue:
 
     def __contains__(self, vertex):
         for item_tuple in self.heap_list:
-            if item_tuple[0] == vertex:
+            if item_tuple[1] == vertex:
                 return True
         return False
 
+    # input in (priority, item)
     def insert(self, item_tuple):
         if (item_tuple in self.heap_list):
             warnings.warn(
@@ -27,13 +29,13 @@ class UpdateablePriorityQueue:
     def pop(self):
         return heapq.heappop(self.heap_list)
 
-    # input
+    # input in (priority, item)
     def update_priority(self, item_tuple):
         if len(item_tuple) > 2:
             raise AttributeError('expected tuple in the form (item, value)')
         update_flag = False
         for t in self.heap_list:
-            if t[0] == item_tuple[0]:
+            if t[1] == item_tuple[1]:
                 self.heap_list.remove(t)
                 self.insert(item_tuple)
                 update_flag = True
@@ -41,7 +43,6 @@ class UpdateablePriorityQueue:
             warnings.warn("tuple not found - no update made", UserWarning)
 
 
-# TODO: pathing
 def shortest_path(graph, source, dest, path_type='SDP'):
     """
     Find shortest path to dest node from source using 2 path_types:
@@ -58,12 +59,12 @@ def shortest_path(graph, source, dest, path_type='SDP'):
     for vertex in graph.nodes:
         dist[vertex] = float('inf')
         prev[vertex] = None  # set previous for a vertex when possible
-        vertices.insert((vertex, dist[vertex]))
+        vertices.insert((dist[vertex], vertex))
     dist[source] = 0
-    vertices.update_priority((source, dist[source]))
+    vertices.update_priority((dist[source], source))
     while len(vertices) > 0:
         # take lowest valued entries first; tuple (vertex, dist[vertex])
-        u, u_cur_delay = vertices.pop()
+        u_cur_delay, u = vertices.pop()
         for neighbour_v in graph.edges[u]:
             if neighbour_v not in vertices:
                continue # skip stuff not in queue anymore
@@ -79,7 +80,7 @@ def shortest_path(graph, source, dest, path_type='SDP'):
             if altered_delay < dist[neighbour_v]:
                 dist[neighbour_v] = altered_delay
                 prev[neighbour_v] = u
-                vertices.update_priority((neighbour_v, dist[neighbour_v]))
+                vertices.update_priority((dist[neighbour_v], neighbour_v))
     return get_path_dist_tuple(dist, prev, dest)
 
 
