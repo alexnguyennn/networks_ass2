@@ -12,6 +12,7 @@ class Graph:
         self.delays = {}  # link delays
         self.cap = {}  # circuit capacity
         self.load = {}  # load = Active Circuits / Capacity
+        self.connections = set() # connections? #TODO explore?
 
     # add a new switch/router
     def add_node(self, node):
@@ -31,36 +32,68 @@ class Graph:
         self.cap[(to_n, from_n)] = capacity
 
     def add_connection(self, connection_path):
+        # TODO - accept virtual connection class instead?
         # TODO fill out. returns boolean based on success/blocked
         # maybe return a unique id instead?
         # for node in connection_path:
         # 3.
-        pass
+        connection_edges = self.path_list_to_edges(connection_path)
+        cap_list =self.get_edge_list_capacities(connection_edges)
+        for cap in cap_list:
+            if cap < 1:
+                return False
+        for edge_tuple in connection_edges:
+            self.cap[edge_tuple] -= 1
+        return True
 
 
-    def remove_circuit(self, circuit_edges):
+    def remove_connection(self, connection_path):
         # TODO fill out. returns boolean based on success/blocked
         # maybe pass in unique id instead?
         # 4.
-        pass
+        # TODO check if THIS specific connection is on path first?
+        connection_edges = self.path_list_to_edges(connection_path)
+        try:
+            for edge_tuple in connection_edges:
+                self.cap[edge_tuple] -= 1
+            return True
+        except e:
+            return False
 
     def path_list_to_edges(self, path):
-        # TODO convert to list of edge tuples (from_n, to_n), helper for above methods
-        # nEdges = nNodes - 1
+        """convert to list of edge tuples (from_n, to_n), helper for above methods
+        nEdges = nNodes - 1
+        """
         # 1.
-        pass
+        nodes = iter(path)
+        edges = []
+        from_node = None
+        for node in nodes:
+            if from_node is None:
+                from_node = node
+                to_node = next(nodes)
+            else:
+                from_node = to_node
+                to_node = node
+            edges.append((from_node, to_node))
+        return edges
 
-    def get_edge_list_delays(edge_list):
+    def get_edge_list_delays(self, edge_list):
         """
         Input: list of tuples (from_n, to_n)
         Return list of delays corresponding to each tuple
         """
-        #2.
-        pass
+        result = []
+        for edge_tuple in edge_list:
+            result.append(self.delays[edge_tuple])
+        return result
 
-    def get_edge_list_capacities(edge_list):
+    def get_edge_list_capacities(self, edge_list):
         #3.
-        pass
+        result = []
+        for edge_tuple in edge_list:
+            result.append(self.cap[edge_tuple])
+        return result
 
     def parse_topology(self, file_path):
         f = open(file_path, "r")
