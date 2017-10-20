@@ -4,4 +4,5 @@ class StatisticsManager:
         # calcaverages
         # counthops(circuit_edges)
         # updateStats(key, increment/value)
+        # manage num packets via routingperf's  packet rate
         pass

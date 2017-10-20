@@ -22,6 +22,7 @@ class RoutingPerformance:
         self.workload = work
         # TODO: track virtualcircuits in flight somehow, implement timer start/stop
         # variables (queue of connections, network/circuit mode etc), parseWorkload()
+        # TODO parse workload file into sorted queue
 
     # init VC requests
 
