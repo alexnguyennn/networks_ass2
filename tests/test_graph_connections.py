@@ -1,51 +1,98 @@
 import pytest
+from virtual_connection import VirtualConnection
+
 
 def test_path_to_edge_tuples(graph, graph_topology, graph_topology_simple):
-    result_path = ['a', 'c', 'd', 'g', 'i']
-    assert graph.path_list_to_edges(result_path) == [('a', 'c'), ('c', 'd'), ('d', 'g'), ('g', 'i')]
-    assert (len(graph.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['a', 'e', 'i']
-    assert graph.path_list_to_edges(result_path) == [('a', 'e'), ('e', 'i')]
-    assert (len(graph.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['A', 'C', 'D']
-    assert graph_topology_simple.path_list_to_edges(result_path) == [('A', 'C'), ('C', 'D')]
-    assert (len(graph_topology_simple.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['B', 'C']
-    assert graph_topology_simple.path_list_to_edges(result_path) == [('B', 'C')]
-    assert (len(graph_topology_simple.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['B', 'C', 'D']
-    assert graph_topology_simple.path_list_to_edges(result_path) == [('B', 'C'), ('C', 'D')]
-    assert (len(graph_topology_simple.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['A', 'B', 'D']
-    assert graph_topology_simple.path_list_to_edges(result_path) == [('A', 'B'), ('B', 'D')]
-    assert (len(graph_topology_simple.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['D', 'F', 'P', 'O', 'N']
-    assert graph_topology.path_list_to_edges(result_path) == [('D', 'F'), ('F', 'P'), ('P', 'O'), ('O', 'N')]
-    assert (len(graph_topology.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['I', 'J', 'K', 'N', 'O', 'G', 'H']
-    assert graph_topology.path_list_to_edges(result_path) == [('I', 'J'), ('J', 'K'), ('K', 'N'), ('N', 'O'), ('O', 'G'), ('G', 'H')]
-    assert (len(graph_topology.path_list_to_edges(result_path))) == len(result_path) - 1
-    result_path = ['A', 'B', 'I', 'J', 'K', 'N', 'O']
-    assert graph_topology.path_list_to_edges(result_path) == [('A', 'B'), ('B', 'I'), ('I', 'J'), ('J', 'K'), ('K', 'N'), ('N', 'O')]
-    assert (len(graph_topology.path_list_to_edges(result_path))) == len(result_path) - 1
+    assert_path_edges(graph, ['a', 'c', 'd', 'g', 'i'],
+                      [('a', 'c'), ('c', 'd'), ('d', 'g'), ('g', 'i')])
+    assert_path_edges(graph, ['a', 'e', 'i'], [('a', 'e'), ('e', 'i')])
+    assert_path_edges(graph_topology_simple, ['A', 'C', 'D'], [('A', 'C'),
+                                                               ('C', 'D')])
+    assert_path_edges(graph_topology_simple, ['B', 'C'], [('B', 'C')])
+    assert_path_edges(graph_topology_simple, ['B', 'C', 'D'], [('B', 'C'),
+                                                               ('C', 'D')])
+    assert_path_edges(graph_topology_simple, ['A', 'B', 'D'], [('A', 'B'),
+                                                               ('B', 'D')])
+    assert_path_edges(graph_topology, ['D', 'F', 'P', 'O', 'N'],
+                      [('D', 'F'), ('F', 'P'), ('P', 'O'), ('O', 'N')])
+    assert_path_edges(graph_topology, ['I', 'J', 'K', 'N', 'O', 'G', 'H'],
+                      [('I', 'J'), ('J', 'K'), ('K', 'N'), ('N', 'O'),
+                       ('O', 'G'), ('G', 'H')])
+    assert_path_edges(graph_topology, ['A', 'B', 'I', 'J', 'K', 'N', 'O'],
+                      [('A', 'B'), ('B', 'I'), ('I', 'J'), ('J', 'K'),
+                       ('K', 'N'), ('N', 'O')])
+
 
 def test_connections(graph):
-    result_path = ['a', 'c', 'd', 'g', 'i']
-    connection_edges = graph.path_list_to_edges(result_path)
-    assert graph.get_edge_list_capacities(connection_edges) == [1, 1, 1, 1]
-    success = graph.add_connection(result_path)
-    assert graph.get_edge_list_capacities(connection_edges) == [0, 0, 0, 0]
-    assert graph.get_edge_list_delays(connection_edges) == [3, 1, 2, 2]
-    assert success == True
+    add_then_remove_test(graph, ['a', 'c', 'd', 'g', 'i'], [1, 1, 1, 1],
+                         [3, 1, 2, 2])
+    add_then_remove_test(graph, ['a', 'e', 'i'], [1, 1], [2, 7])
 
-    result_path = ['a', 'e', 'i']
-    pass
+
 def test_connections_topology_simple(graph_topology_simple):
-    result_path = ['A', 'C', 'D']
-    result_path = ['B', 'C']
-    result_path = ['B', 'C', 'D']
-    result_path = ['A', 'B', 'D']
+    add_then_remove_test(graph_topology_simple, ['B', 'C'], [20], [20])
+    add_then_remove_test(graph_topology_simple, ['B', 'C', 'D'], [20, 20],
+                         [20, 8])
+    add_then_remove_test(graph_topology_simple, ['A', 'B', 'D'], [19, 70],
+                         [10, 30])
+
+
 def test_connections_topology_complex(graph_topology):
-    result_path = ['D', 'F', 'P', 'O', 'N']
-    result_path = ['I', 'J', 'K', 'N', 'O', 'G', 'H']
-    result_path = ['A', 'B', 'I', 'J', 'K', 'N', 'O']
+    add_then_remove_test(graph_topology, ['D', 'F', 'P', 'O', 'N'],
+                         [20, 27, 36, 50], [100, 30, 10, 40])
+    add_then_remove_test(graph_topology, ['I', 'J', 'K', 'N', 'O', 'G', 'H'],
+                         [35, 36, 45, 50, 25, 20], [5, 30, 30, 40, 40, 100])
+    add_then_remove_test(graph_topology, ['A', 'B', 'I', 'J', 'K', 'N', 'O'],
+                         [20, 35, 36, 45, 50], [30, 100, 5, 30, 30, 40])
+    add_n_times_test(graph_topology, ['D', 'F', 'P', 'O', 'N'],
+                     [20, 27, 36, 50], [100, 30, 10, 40], 20)
+    add_n_times_test(
+        graph_topology, ['D', 'F', 'P', 'O', 'N'], [20, 27, 36, 50],
+        [100, 30, 10, 40],
+        21,
+        status=False)
+
+
+def add_then_remove_test(graph, path, prior_cap_list, path_delays,
+                         status=True):
+    conn = VirtualConnection(0, path[0], path[len(path) - 1], 1)
+    conn.path = path
+    connection_edges = graph.path_list_to_edges(conn.path)
+    assert graph.get_edge_list_capacities(connection_edges) == prior_cap_list
+    success = graph.add_connection(conn)
+    assert success == status
+    if success is True:
+        post_cap_list = [(x - 1) for x in prior_cap_list]
+        assert graph.get_edge_list_capacities(
+            connection_edges) == post_cap_list
+    assert graph.get_edge_list_delays(connection_edges) == path_delays
+    success = graph.remove_connection(conn)
+    assert success == status
+    assert graph.get_edge_list_capacities(connection_edges) == prior_cap_list
+
+
+def add_n_times_test(graph, path, prior_cap_list, path_delays, n, status=True):
+    conn = VirtualConnection(0, path[0], path[len(path) - 1], 1)
+    conn.path = path
+    connection_edges = graph.path_list_to_edges(conn.path)
+    assert graph.get_edge_list_capacities(connection_edges) == prior_cap_list
+    assert graph.get_edge_list_delays(connection_edges) == path_delays
+    i = 0
+    while i < n:
+        success = graph.add_connection(conn)
+        assert success == status
+        if success is True:
+            post_cap_list = [(x - 1) for x in prior_cap_list]
+            assert graph.get_edge_list_capacities(
+                connection_edges) == post_cap_list
+            i += 1
+        elif success is False and status is True:
+            return False
+        elif success is False and status is False:
+            return True
+    return True
+
+
+def assert_path_edges(graph, path, edges):
+    assert graph.path_list_to_edges(path) == edges
+    assert (len(graph.path_list_to_edges(path))) == len(path) - 1
