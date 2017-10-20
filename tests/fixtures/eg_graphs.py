@@ -1,5 +1,6 @@
-import pytest 
+import pytest
 from graph_rep import Graph
+
 
 @pytest.fixture
 def graph_topology_simple():
@@ -40,6 +41,7 @@ def graph():
     graph.add_edge('h', 'f', 2, 1)
     graph.add_edge('h', 'g', 2, 1)
     return graph
+
 
 @pytest.fixture
 def workload_queue():

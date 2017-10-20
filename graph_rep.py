@@ -12,7 +12,7 @@ class Graph:
         self.delays = {}  # link delays
         self.cap = {}  # circuit capacity
         self.load = {}  # load = Active Circuits / Capacity
-        self.virtual_connections = set() # connections? #TODO explore?
+        self.virtual_connections = set()  # connections? #TODO explore?
 
     # add a new switch/router
     def add_node(self, node):
@@ -38,7 +38,7 @@ class Graph:
         # for node in connection_path:
         # 3.
         connection_edges = self.path_list_to_edges(connection.path)
-        cap_list =self.get_edge_list_capacities(connection_edges)
+        cap_list = self.get_edge_list_capacities(connection_edges)
         for cap in cap_list:
             if cap < 1:
                 return False
@@ -46,7 +46,6 @@ class Graph:
             self.cap[edge_tuple] -= 1
         self.virtual_connections.add(connection)  # add virtual connection
         return True
-
 
     def remove_connection(self, connection):
         # TODO fill out. returns boolean based on success/blocked
@@ -107,7 +106,7 @@ class Graph:
             x = line[0]
             y = line[1]
             delay = line[2]
-            cap = line[2]
+            cap = line[3]
             #print("x = {}, y = {}, delay = {}, cap = {}".format(x, y, delay, cap))
             self.add_node(x)
             self.add_node(y)
@@ -119,8 +118,8 @@ class Graph:
     def show_graph(self):
         for n in self.nodes:
             print("router = {}".format(n))
-            for e in self.graph.edges[n]:
+            for e in self.edges[n]:
                 print("nb: {} | delay: {} | capacity: {} | load: {}" \
-                .format(e, self.graph.delays[(n, e)], self.graph.cap[(n, e)], None))
+                .format(e, self.delays[(n, e)], self.cap[(n, e)], None))
             print("-----------------")
         return None

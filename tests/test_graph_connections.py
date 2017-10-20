@@ -1,4 +1,6 @@
 import pytest
+import copy
+
 from virtual_connection import VirtualConnection
 
 
@@ -43,7 +45,7 @@ def test_connections_topology_complex(graph_topology):
     add_then_remove_test(graph_topology, ['I', 'J', 'K', 'N', 'O', 'G', 'H'],
                          [35, 36, 45, 50, 25, 20], [5, 30, 30, 40, 40, 100])
     add_then_remove_test(graph_topology, ['A', 'B', 'I', 'J', 'K', 'N', 'O'],
-                         [20, 35, 36, 45, 50], [30, 100, 5, 30, 30, 40])
+                         [20, 32, 35, 36, 45, 50], [30, 100, 5, 30, 30, 40])
     add_n_times_test(graph_topology, ['D', 'F', 'P', 'O', 'N'],
                      [20, 27, 36, 50], [100, 30, 10, 40], 20)
     add_n_times_test(
@@ -72,19 +74,21 @@ def add_then_remove_test(graph, path, prior_cap_list, path_delays,
 
 
 def add_n_times_test(graph, path, prior_cap_list, path_delays, n, status=True):
+    graph_clone = copy.deepcopy(graph)
     conn = VirtualConnection(0, path[0], path[len(path) - 1], 1)
     conn.path = path
-    connection_edges = graph.path_list_to_edges(conn.path)
-    assert graph.get_edge_list_capacities(connection_edges) == prior_cap_list
-    assert graph.get_edge_list_delays(connection_edges) == path_delays
+    connection_edges = graph_clone.path_list_to_edges(conn.path)
+    assert graph_clone.get_edge_list_capacities(
+        connection_edges) == prior_cap_list
+    assert graph_clone.get_edge_list_delays(connection_edges) == path_delays
     i = 0
     while i < n:
-        success = graph.add_connection(conn)
-        assert success == status
+        success = graph_clone.add_connection(conn)
         if success is True:
             post_cap_list = [(x - 1) for x in prior_cap_list]
-            assert graph.get_edge_list_capacities(
+            assert graph_clone.get_edge_list_capacities(
                 connection_edges) == post_cap_list
+            prior_cap_list = post_cap_list  # update for next loop
             i += 1
         elif success is False and status is True:
             return False
