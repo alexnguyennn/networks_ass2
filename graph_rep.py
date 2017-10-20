@@ -12,7 +12,7 @@ class Graph:
         self.delays = {}  # link delays
         self.cap = {}  # circuit capacity
         self.load = {}  # load = Active Circuits / Capacity
-        self.connections = set() # connections? #TODO explore?
+        self.virtual_connections = set() # connections? #TODO explore?
 
     # add a new switch/router
     def add_node(self, node):
@@ -27,38 +27,39 @@ class Graph:
         # init link delay
         self.delays[(from_n, to_n)] = delay
         self.delays[(to_n, from_n)] = delay
-        # init link capacity
+        # init link capacity - this one can change
         self.cap[(from_n, to_n)] = capacity
         self.cap[(to_n, from_n)] = capacity
 
-    def add_connection(self, connection_path):
+    def add_connection(self, connection):
         # TODO - accept virtual connection class instead?
         # TODO fill out. returns boolean based on success/blocked
         # maybe return a unique id instead?
         # for node in connection_path:
         # 3.
-        connection_edges = self.path_list_to_edges(connection_path)
+        connection_edges = self.path_list_to_edges(connection.path)
         cap_list =self.get_edge_list_capacities(connection_edges)
         for cap in cap_list:
             if cap < 1:
                 return False
         for edge_tuple in connection_edges:
             self.cap[edge_tuple] -= 1
+        self.virtual_connections.add(connection)  # add virtual connection
         return True
 
 
-    def remove_connection(self, connection_path):
+    def remove_connection(self, connection):
         # TODO fill out. returns boolean based on success/blocked
         # maybe pass in unique id instead?
         # 4.
         # TODO check if THIS specific connection is on path first?
-        connection_edges = self.path_list_to_edges(connection_path)
-        try:
-            for edge_tuple in connection_edges:
-                self.cap[edge_tuple] -= 1
-            return True
-        except e:
+        if connection not in self.virtual_connections:
             return False
+        connection_edges = self.path_list_to_edges(connection.path)
+        for edge_tuple in connection_edges:
+            self.cap[edge_tuple] += 1
+        self.virtual_connections.remove(connection)
+        return True
 
     def path_list_to_edges(self, path):
         """convert to list of edge tuples (from_n, to_n), helper for above methods
@@ -68,14 +69,17 @@ class Graph:
         nodes = iter(path)
         edges = []
         from_node = None
-        for node in nodes:
-            if from_node is None:
-                from_node = node
-                to_node = next(nodes)
-            else:
-                from_node = to_node
-                to_node = node
-            edges.append((from_node, to_node))
+        try:
+            for node in nodes:
+                if from_node is None:
+                    from_node = node
+                    to_node = next(nodes)
+                else:
+                    from_node = to_node
+                    to_node = node
+                edges.append((from_node, to_node))
+        except StopIteration:
+            raise ValueError("Attempt to convert empty path to edges")
         return edges
 
     def get_edge_list_delays(self, edge_list):

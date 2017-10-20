@@ -40,3 +40,8 @@ def graph():
     graph.add_edge('h', 'f', 2, 1)
     graph.add_edge('h', 'g', 2, 1)
     return graph
+
+@pytest.fixture
+def workload_queue():
+    # create workload queue
+    pass

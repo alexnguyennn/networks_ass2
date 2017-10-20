@@ -71,19 +71,20 @@ def shortest_path(graph, source, dest, path_type='SDP'):
             # in SHP, all delays are 1 (only counting link hops)
             if path_type == 'SHP': 
                 added_delay = 1
+                altered_delay = u_cur_delay + added_delay
             elif path_type == 'SDP':
                 added_delay = graph.delays[(u, neighbour_v)] 
+                altered_delay = u_cur_delay + added_delay
+            elif path_type == 'LLP':
+                altered_delay = ( len(graph.virtual_connections) ) / ( graph.cap[(u, neighbour_v)] )
             else:
                 raise ValueError("Invalid value for path_type to shortest_path")
-            altered_delay = u_cur_delay + added_delay
             # if new altered cost is less than a current minimum dist TO a neighbour, update
             if altered_delay < dist[neighbour_v]:
                 dist[neighbour_v] = altered_delay
                 prev[neighbour_v] = u
                 vertices.update_priority((dist[neighbour_v], neighbour_v))
     return get_path_dist_tuple(dist, prev, dest)
-
-
 
 def shortest_hop_mst(graph, source, dest):
     """ Shortest Hop Minimum spannign tree (SHP) """
