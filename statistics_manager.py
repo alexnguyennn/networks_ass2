@@ -21,8 +21,8 @@
 #   pkt_blocked_num  = YES  : routing_performance.start_requests()
 #   pkt_blocked_rate = N/A  : [ calculated from existing stats ]
 #   circuit_success  = YES  : routing_performance.start_requests()
-#   total_hops       = NO   :
-#   total_delay      = NO   :
+#   total_hops       = YES  : routing_performance.start_requests()
+#   total_delay      = YES  : routing_performance.start_requests()
 #   ave_hops         = N/A  : [ calculated from existing stats ]
 #   ave_delay        = N/A  : [ calculated from existing stats ]
 
