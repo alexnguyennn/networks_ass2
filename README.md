@@ -1,4 +1,9 @@
 # networks_ass2
+## How to add pathing algorithm
+- add new function to ```pathing_algorithms.py```
+- import new function in ```routing_performance.py``` line 3
+- change line 36 of ```routing_performance.py``` to use new function instead of ```shortest_path```
+- in ```VirtualConnection.fill_path``` check arguments are being used correctly in new function (```path_algorithm``` is your new algorithm function and is currently set to those of ```shortest_path``` - modify as needed)
 ## Run base assignment
 - Use packet rate of 1
 - SHP:
