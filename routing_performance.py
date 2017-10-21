@@ -16,18 +16,31 @@ class RoutingPerformance:
     """
 
     # NOTE: moved init_topology/ show_graph to graph_rep
-    def __init__(self, g, top, work):
+    def __init__(self, g, topology_file_path, work):
         self.graph = g
         # init graph topology: routers, delay, capacity
-        self.graph.parse_topology(top)
-        self.workload = work
+        self.graph.parse_topology(topology_file_path)
+        self.workload = WorkloadQueue()
         # TODO: track virtualcircuits in flight somehow, implement timer start/stop
         # variables (queue of connections, network/circuit mode etc), parseWorkload()
         # TODO parse workload file into sorted queue
+        # TODO add other parameters when reqd
 
     # init VC requests
     def start_requests(self):
+        # main loop of program
+        # pop off item from queue
+        # if flag not set, attempt make connection
+        # calculate path
+        # attempt to put connection on graph
+        # if ok, add connection onto queue at duration (to remove)
+        # if not, request is blocked. discard and handle next one
+        # if flag set, we just need to remove this connection to free capacity
+        # repeat until empty graph
+
         return None
+    def close_program(self):
+        # print final statistics to terminal here
 
 
 """

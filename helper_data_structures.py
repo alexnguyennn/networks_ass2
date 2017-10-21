@@ -42,5 +42,5 @@ class UpdateablePriorityQueue:
         if not update_flag:
             warnings.warn("tuple not found - no update made", UserWarning)
 
-    def peek_largest(self):
-        return heapq.hea
+    def peek_largest(self, n):
+        return heapq.nlargest(n, self.heap_list)

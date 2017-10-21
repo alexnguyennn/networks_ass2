@@ -1,5 +1,6 @@
 import pytest
 from graph_rep import Graph
+from workload_queue import WorkloadQueue
 
 
 @pytest.fixture
@@ -45,5 +46,11 @@ def graph():
 
 @pytest.fixture
 def workload_queue():
-    # create workload queue
-    pass
+    wq = WorkloadQueue('./workload.txt')
+    return wq
+
+
+@pytest.fixture
+def workload_simple():
+    wq = WorkloadQueue('./workload_simple.txt')
+    return wq

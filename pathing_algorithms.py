@@ -1,6 +1,3 @@
-import queue
-import warnings
-import heapq
 from helper_data_structures import UpdateablePriorityQueue
 
 
@@ -28,24 +25,27 @@ def shortest_path(graph, source, dest, path_type='SDP'):
         u_cur_delay, u = vertices.pop()
         for neighbour_v in graph.edges[u]:
             if neighbour_v not in vertices:
-               continue # skip stuff not in queue anymore
+                continue  # skip stuff not in queue anymore
             # in SHP, all delays are 1 (only counting link hops)
-            if path_type == 'SHP': 
+            if path_type == 'SHP':
                 added_delay = 1
                 altered_delay = u_cur_delay + added_delay
             elif path_type == 'SDP':
-                added_delay = graph.delays[(u, neighbour_v)] 
+                added_delay = graph.delays[(u, neighbour_v)]
                 altered_delay = u_cur_delay + added_delay
             elif path_type == 'LLP':
-                altered_delay = ( len(graph.virtual_connections) ) / ( graph.cap[(u, neighbour_v)] )
+                altered_delay = (len(graph.virtual_connections)) / (graph.cap[(
+                    u, neighbour_v)])
             else:
-                raise ValueError("Invalid value for path_type to shortest_path")
+                raise ValueError(
+                    "Invalid value for path_type to shortest_path")
             # if new altered cost is less than a current minimum dist TO a neighbour, update
             if altered_delay < dist[neighbour_v]:
                 dist[neighbour_v] = altered_delay
                 prev[neighbour_v] = u
                 vertices.update_priority((dist[neighbour_v], neighbour_v))
     return get_path_dist_tuple(dist, prev, dest)
+
 
 def shortest_hop_mst(graph, source, dest):
     """ Shortest Hop Minimum spannign tree (SHP) """
@@ -126,6 +126,7 @@ def shortest_delay_mst(graph, source, dest):
     return get_path_dist_tuple(visited, pred, dest)
     #return visited, pred
 
+
 def get_path_dist_tuple(distance_dict, prev_node_dict, dest):
     # calculate path, cost from source to dest:
     u = dest
@@ -134,5 +135,3 @@ def get_path_dist_tuple(distance_dict, prev_node_dict, dest):
         path.insert(0, u)
         u = prev_node_dict[u]
     return (path, distance_dict[dest])
-
-
