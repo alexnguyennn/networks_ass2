@@ -62,7 +62,7 @@ class RoutingPerformance:
 
     def close_program(self):
         # print final statistics to terminal here
-        pass
+        self.statistics_manager.print_statistics()
 
 
 """
