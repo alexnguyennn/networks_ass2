@@ -11,17 +11,20 @@
 #   average cumulative propagation delay per circuit: 120.54
 
 # CHECKLIST FOR PLACING STATS UPDATES:
-#   total_requests   = NO -> place where VC requests are initialised
-#   total_pkts       = NO -> place where a packets are sent (for each request)
-#   pkt_success_num  = NO ->
-#   pkt_success_rate = N/A
-#   pkt_blocked_num  = NO
-#   pkt_blocked_rate = N/A
-#   circuit_success  = NO
-#   total_hops       = NO
-#   total_delay      = NO
-#   ave_hops         = N/A
-#   ave_delay        = N/A
+#
+#	STATISTIC 		 STATUS   INCREMENT LOCATION
+#	----------------------------------------------------------
+#   total_requests   = YES  : routing_performance.start_requests()
+#   total_pkts       = YES  : routing_performance.start_requests()
+#   pkt_success_num  = YES  : routing_performance.start_requests()
+#   pkt_success_rate = N/A  : [ calculated from existing stats ]
+#   pkt_blocked_num  = YES  : routing_performance.start_requests()
+#   pkt_blocked_rate = N/A  : [ calculated from existing stats ]
+#   circuit_success  = YES  : routing_performance.start_requests()
+#   total_hops       = NO   :
+#   total_delay      = NO   :
+#   ave_hops         = N/A  : [ calculated from existing stats ]
+#   ave_delay        = N/A  : [ calculated from existing stats ]
 
 
 class StatisticsManager:
@@ -59,7 +62,8 @@ class StatisticsManager:
         # update success and rate
         if key == "pkt_success":
             self.pkt_success_num += increment
-            self.pkt_success_rate = self.pkt_success_num / self.total_pkts
+            if self.total_pkts != 0:
+            	self.pkt_success_rate = self.pkt_success_num / self.total_pkts
         # update blocked and rate
         if key == "pkt_blocked":
             self.pkt_blocked_num += increment
@@ -68,11 +72,11 @@ class StatisticsManager:
         if key == "circuit_success":
             self.circuit_success += increment
         # update hops + average hops
-        if key == "hop":
+        if key == "hops":
             self.total_hops += increment
             self.ave_hops = self.total_hops / self.circuit_success
         # update total propagation delay
-        if key == "delay":
+        if key == "delays":
             self.total_delay += increment
             self.ave_delay = self.total_delay / self.circuit_success
 

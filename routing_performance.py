@@ -32,17 +32,34 @@ class RoutingPerformance:
     def start_requests(self):
         while not self.workload.is_empty():
             cur_connection = self.workload.pop().connection
+
             if not cur_connection.is_processed:
+                # increment total_requests
+                self.statistics_manager.update_stats("request", 1)
+                # increment total_pkts
+                num_pkts = int(cur_connection.duration) * int(PACKET_RATE)
+                self.statistics_manager.update_stats("packets", num_pkts)
+                
                 status = cur_connection.fill_path(self.graph, shortest_path,
                                                   self.routing_scheme)
                 cur_connection.is_processed = True
                 if status:
+                    # increment successful pkt
+                    self.statistics_manager.update_stats("pkt_success", num_pkts)
+                    # increment circuit_success
+                    self.statistics_manager.update_stats("circuit_success", 1)
+                    # increment total_hops
+                    self.statistics_manager.update_stats("hops",len(cur_connection.path))
+                    # increment total_delay
+                    self.statistics_manager.update_stats("delays", cur_connection.path_delay)
                     # connection worked! add another connection at the end of duration to queue
                     end_time = cur_connection.start + cur_connection.duration
                     end_tuple = WorkloadTuple(
                         time=end_time, connection=cur_connection)
                     self.workload.add(end_tuple)
                 else:
+                    # increment blocked pkt
+                    self.statistics_manager.update_stats("pkt_blocked", num_pkts)
                     # connection was blocked
                     print('work loop: connection blocked!')
             else:
