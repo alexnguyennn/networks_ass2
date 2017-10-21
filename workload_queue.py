@@ -44,3 +44,6 @@ class WorkloadQueue:
 
     def peek_duration(self):
         return self.queue.peek_largest(1)[0].time
+
+    def is_empty(self):
+        return self.queue.is_empty()

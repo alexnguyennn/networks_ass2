@@ -13,6 +13,7 @@ class Graph:
         self.cap = {}  # circuit capacity
         self.load = {}  # load = Active Circuits / Capacity
         self.virtual_connections = set()
+        self.debug = True
 
     # add a new switch/router
     def add_node(self, node):
@@ -45,6 +46,14 @@ class Graph:
         for edge_tuple in connection_edges:
             self.cap[edge_tuple] -= 1
         self.virtual_connections.add(connection)  # add virtual connection
+        if self.debug:
+            print(
+                "Just added connection with path: {} start: {} duration: {}".
+                format(connection.path, connection.start, connection.duration))
+            print(
+                "======================== UPDATED GRAPH STATUS ================"
+            )
+            self.show_graph()
         return True
 
     def remove_connection(self, connection):
@@ -61,6 +70,10 @@ class Graph:
             self.virtual_connections.remove(connection)
         except:
             raise ValueError("tried to remove a connection not in graph")
+        if self.debug:
+            print(
+                "Just removed connection with path: {} start: {} duration: {}".
+                format(connection.path, connection.start, connection.duration))
         return True
 
     def path_list_to_edges(self, path):

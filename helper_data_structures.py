@@ -44,3 +44,6 @@ class UpdateablePriorityQueue:
 
     def peek_largest(self, n):
         return heapq.nlargest(n, self.heap_list)
+
+    def is_empty(self):
+        return len(self.heap_list) == 0

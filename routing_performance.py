@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
 import sys
-from pathing_algorithms import shortest_delay_mst, shortest_hop_mst
+from pathing_algorithms import shortest_path
 from graph_rep import Graph
 # NOTE: empty classes atm
 from routing_timer import RoutingTimer
 from virtual_circuit import VirtualCircuit
 from statistics_manager import StatisticsManager
-from workload_queue import WorkloadQueue
+from workload_queue import WorkloadQueue, WorkloadTuple
 
 
 class RoutingPerformance:
@@ -16,18 +16,43 @@ class RoutingPerformance:
     """
 
     # NOTE: moved init_topology/ show_graph to graph_rep
-    def __init__(self, g, topology_file_path, work):
+    def __init__(self, g, NETWORK_SCHEME, ROUTING_SCHEME, TOPOLOGY_FILE,
+                 WORKLOAD_FILE, PACKET_RATE):
         self.graph = g
         # init graph topology: routers, delay, capacity
-        self.graph.parse_topology(topology_file_path)
-        self.workload = WorkloadQueue()
+        self.graph.parse_topology(TOPOLOGY_FILE)
+        self.workload = WorkloadQueue(WORKLOAD_FILE)
+        self.network_scheme = NETWORK_SCHEME
+        self.routing_scheme = ROUTING_SCHEME
+        self.packet_rate = PACKET_RATE
         # TODO: track virtualcircuits in flight somehow, implement timer start/stop
         # variables (queue of connections, network/circuit mode etc), parseWorkload()
         # TODO parse workload file into sorted queue
         # TODO add other parameters when reqd
 
     # init VC requests
+
     def start_requests(self):
+        while not self.workload.is_empty():
+            cur_connection = self.workload.pop()
+            if not cur_connection.is_processed:
+                status = cur_connection.fill_path(self.graph, shortest_path,
+                                                  self.routing_scheme)
+                cur_connection.is_processed = True
+                if status:
+                    # connection worked! add another connection at the end of duration to queue
+                    end_time = cur_connection.start + cur_connection.duration
+                    end_tuple = WorkloadTuple(
+                        time=end_time, connection=cur_connection)
+                    self.workload.add(end_tuple)
+                else:
+                    # connection was blocked
+                    print('work loop: connection blocked!')
+            else:
+                # we've seen this before - must be time to pop it back off
+                self.graph.remove_connection(cur_connection)
+
+        # TODO report durations here?
         # main loop of program
         # pop off item from queue
         # if flag not set, attempt make connection
@@ -38,9 +63,9 @@ class RoutingPerformance:
         # if flag set, we just need to remove this connection to free capacity
         # repeat until empty graph
 
-        return None
     def close_program(self):
         # print final statistics to terminal here
+        pass
 
 
 """
@@ -59,21 +84,12 @@ if __name__ == '__main__':
         # grab argument objects
         NETWORK_SCHEME, ROUTING_SCHEME, TOPOLOGY_FILE, WORKLOAD_FILE, PACKET_RATE = sys.argv[
             1:]
-        r = RoutingPerformance(graph, TOPOLOGY_FILE, WORKLOAD_FILE)
+        r = RoutingPerformance(graph, NETWORK_SCHEME, ROUTING_SCHEME,
+                               TOPOLOGY_FILE, WORKLOAD_FILE, PACKET_RATE)
 
         # init nodes, links, delay and capacity values is done on creation
         # it should also parseworkload and create queue above
 
-        # test
-        r.graph.show_graph()
-
         # start virtual connection requests
         r.start_requests()
-
-        # Select scheme
-        if ROUTING_SCHEME == "SHP":
-            print("[ SCHEME: SHORTEST HOP PATH ]")
-            SHP = shortest_hop_mst(r.graph, 'A')
-        elif ROUTING_SCHEME == "SDP":
-            print("[ SCHEME: SHORTEST DELAY PATH ]")
-            SDP = shortest_delay_mst(r.graph, 'A')
+        r.close_program()
