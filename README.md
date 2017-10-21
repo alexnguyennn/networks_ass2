@@ -1,4 +1,24 @@
 # networks_ass2
+## Run base assignment
+- Use packet rate of 1
+- SHP:
+```
+python -m routing_performance CIRCUIT SHP topology.txt workload.txt 1
+```
+- SDP:
+```
+python -m routing_performance CIRCUIT SDP topology.txt workload.txt 1
+```
+- LLP (broken atm):
+```
+python -m routing_performance CIRCUIT LLP topology.txt workload.txt 1
+```
+- Debug:
+```
+python -m pdb routing_performance.py CIRCUIT SDP topology.txt workload.txt 1
+```
+
+
 ## Git commands 
 - Clone specific branch
 ```

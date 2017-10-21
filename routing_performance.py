@@ -1,11 +1,10 @@
 #!/usr/bin/python3
-
 import sys
 from pathing_algorithms import shortest_path
 from graph_rep import Graph
 # NOTE: empty classes atm
 from routing_timer import RoutingTimer
-from virtual_circuit import VirtualCircuit
+from virtual_connection import VirtualConnection
 from statistics_manager import StatisticsManager
 from workload_queue import WorkloadQueue, WorkloadTuple
 
@@ -25,16 +24,14 @@ class RoutingPerformance:
         self.network_scheme = NETWORK_SCHEME
         self.routing_scheme = ROUTING_SCHEME
         self.packet_rate = PACKET_RATE
-        # TODO: track virtualcircuits in flight somehow, implement timer start/stop
-        # variables (queue of connections, network/circuit mode etc), parseWorkload()
-        # TODO parse workload file into sorted queue
-        # TODO add other parameters when reqd
+        self.statistics_manager = StatisticsManager(self.network_scheme,
+                                                    self.packet_rate)
 
     # init VC requests
 
     def start_requests(self):
         while not self.workload.is_empty():
-            cur_connection = self.workload.pop()
+            cur_connection = self.workload.pop().connection
             if not cur_connection.is_processed:
                 status = cur_connection.fill_path(self.graph, shortest_path,
                                                   self.routing_scheme)
@@ -71,6 +68,7 @@ class RoutingPerformance:
 """
 Main Function
 """
+# NOTE: test packet rate = 1
 if __name__ == '__main__':
     num_args = 6
     if len(sys.argv) != num_args:

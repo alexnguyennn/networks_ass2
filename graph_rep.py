@@ -48,12 +48,13 @@ class Graph:
         self.virtual_connections.add(connection)  # add virtual connection
         if self.debug:
             print(
-                "Just added connection with path: {} start: {} duration: {}".
-                format(connection.path, connection.start, connection.duration))
-            print(
-                "======================== UPDATED GRAPH STATUS ================"
-            )
-            self.show_graph()
+                "Just added connection with path: {} start: {} duration: {}, end: {}".
+                format(connection.path, connection.start, connection.duration,
+                       connection.start + connection.duration))
+            # print(
+            #     "======================== UPDATED GRAPH STATUS ================"
+            # )
+            # self.show_graph()
         return True
 
     def remove_connection(self, connection):
@@ -72,8 +73,9 @@ class Graph:
             raise ValueError("tried to remove a connection not in graph")
         if self.debug:
             print(
-                "Just removed connection with path: {} start: {} duration: {}".
-                format(connection.path, connection.start, connection.duration))
+                "Just added connection with path: {} start: {} duration: {}, end: {}".
+                format(connection.path, connection.start, connection.duration,
+                       connection.start + connection.duration))
         return True
 
     def path_list_to_edges(self, path):
