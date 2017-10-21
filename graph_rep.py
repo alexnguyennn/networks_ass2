@@ -63,6 +63,8 @@ class Graph:
     def path_list_to_edges(self, path):
         """convert to list of edge tuples (from_n, to_n), helper for above methods
         nEdges = nNodes - 1
+        [a, b, c, d]
+        [(A,B), B,C ]..
         """
         # 1.
         nodes = iter(path)

@@ -7,6 +7,7 @@ from graph_rep import Graph
 from routing_timer import RoutingTimer
 from virtual_circuit import VirtualCircuit
 from statistics_manager import StatisticsManager
+from workload_queue import WorkloadQueue
 
 
 class RoutingPerformance:
@@ -25,7 +26,6 @@ class RoutingPerformance:
         # TODO parse workload file into sorted queue
 
     # init VC requests
-
     def start_requests(self):
         return None
 
