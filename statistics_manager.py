@@ -62,14 +62,9 @@ class StatisticsManager:
         # update success and rate
         if key == "pkt_success":
             self.pkt_success_num += increment
-            if self.total_pkts != 0:
-                self.pkt_success_rate = self.pkt_success_num / self.total_pkts
-                self.pkt_success_rate = self.pkt_success_rate * 100
         # update blocked and rate
         if key == "pkt_blocked":
             self.pkt_blocked_num += increment
-            self.pkt_blocked_rate = self.pkt_blocked_num / self.total_pkts
-            self.pkt_blocked_rate = self.pkt_blocked_rate * 100
         # update circuit success
         if key == "circuit_success":
             self.circuit_success += increment
@@ -84,6 +79,13 @@ class StatisticsManager:
 
     # output statistics to terminal
     def print_statistics(self):
+        # final success % calculations
+        self.pkt_success_rate = self.pkt_success_num / self.total_pkts
+        self.pkt_success_rate = self.pkt_success_rate * 100
+        # final blocked % calculations
+        self.pkt_blocked_rate = self.pkt_blocked_num / self.total_pkts
+        self.pkt_blocked_rate = self.pkt_blocked_rate * 100
+        # print output
         print("total number of virtual circuit requests: {}".format(
             self.total_requests))
         print("total number of packets: {}".format(self.total_pkts))
