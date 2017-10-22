@@ -63,11 +63,13 @@ class StatisticsManager:
         if key == "pkt_success":
             self.pkt_success_num += increment
             if self.total_pkts != 0:
-            	self.pkt_success_rate = self.pkt_success_num / self.total_pkts
+                self.pkt_success_rate = self.pkt_success_num / self.total_pkts
+                self.pkt_success_rate = self.pkt_success_rate * 100
         # update blocked and rate
         if key == "pkt_blocked":
             self.pkt_blocked_num += increment
             self.pkt_blocked_rate = self.pkt_blocked_num / self.total_pkts
+            self.pkt_blocked_rate = self.pkt_blocked_rate * 100
         # update circuit success
         if key == "circuit_success":
             self.circuit_success += increment
