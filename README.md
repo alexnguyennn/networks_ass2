@@ -2,8 +2,10 @@
 ## Implementation
 - 2017 UNSW COMP3331 Assignment 2 Implementation by Alex Nguyen and Brian Lam
 ## Structure
-- helpers contains
+- helpers contains data structures used as part of routing performance
 - root directory contains ```report.xlsx``` (plots, data), ```report.pdf``` and main program, ```routing_performance.py```
+- run tests in ```tests/``` by running the following in root dir: ```pip install -r requirements.txt && pytest```
+
 
 ## Run base assignment
 - Use packet rate of 1
