@@ -1,7 +1,7 @@
 import pytest
 import copy
 
-from virtual_connection import VirtualConnection
+from helpers.virtual_connection import VirtualConnection
 
 
 def test_path_to_edge_tuples(graph, graph_topology, graph_topology_simple):

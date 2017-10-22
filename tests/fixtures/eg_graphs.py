@@ -1,6 +1,6 @@
 import pytest
-from graph_rep import Graph
-from workload_queue import WorkloadQueue
+from helpers.graph_rep import Graph
+from helpers.workload_queue import WorkloadQueue
 
 
 @pytest.fixture

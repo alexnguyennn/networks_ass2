@@ -80,7 +80,7 @@ class Graph:
                         self.path_list_to_edges(connection.path),
                         self.get_edge_list_capacities(
                             self.path_list_to_edges(connection.path))))
-        return False
+        return True
 
     def path_list_to_edges(self, path):
         """convert to list of edge tuples (from_n, to_n), helper for above methods

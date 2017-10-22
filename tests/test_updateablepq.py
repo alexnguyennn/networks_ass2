@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import pytest
-from helper_data_structures import UpdateablePriorityQueue
+from helpers.workload_queue import UpdateablePriorityQueue
 
 
 @pytest.fixture
