@@ -131,19 +131,15 @@ class Graph:
             y = line[1]
             delay = line[2]
             cap = line[3]
-            #print("x = {}, y = {}, delay = {}, cap = {}".format(x, y, delay, cap))
             self.add_node(x)
             self.add_node(y)
             self.add_edge(x, y, int(delay), int(cap))
 
-# display graph nodes, links, link delay values, link capacity, curr link load
-# NOTE: curr link load set to None since workload methods are not implemented yet
-
     def show_graph(self):
+        """display graph nodes, links, link delay values, link capacity, curr link load"""
         for n in self.nodes:
             print("router = {}".format(n))
             for e in self.edges[n]:
                 print("nb: {} | delay: {} | capacity: {} | max capacity: {}" \
                 .format(e, self.delays[(n, e)], self.cap[(n, e)], self.max_cap[(n, e)]))
             print("-----------------")
-        return None

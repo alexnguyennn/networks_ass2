@@ -1,13 +1,11 @@
 #!/usr/bin/python3
 import math
 import sys
-from pathing_algorithms import shortest_path
-from graph_rep import Graph
-# NOTE: empty classes atm
-from routing_timer import RoutingTimer
-from virtual_connection import VirtualConnection
-from statistics_manager import StatisticsManager
-from workload_queue import WorkloadQueue, WorkloadTuple
+from helpers.pathing_algorithms import shortest_path
+from helpers.graph_rep import Graph
+from helpers.virtual_connection import VirtualConnection
+from helpers.statistics_manager import StatisticsManager
+from helpers.workload_queue import WorkloadQueue, WorkloadTuple
 
 
 class RoutingPerformance:
@@ -32,6 +30,7 @@ class RoutingPerformance:
     # init VC requests
 
     def start_requests(self):
+        # continuously get requests in time processing order
         while not self.workload.is_empty():
             cur_time, cur_connection = self.workload.pop()
 
@@ -56,7 +55,8 @@ class RoutingPerformance:
                     # increment total_delay
                     self.statistics_manager.update_stats(
                         "delays", cur_connection.path_delay)
-                    # connection worked! add another connection at the end of duration to queue
+                    # connection worked! add another connection at
+                    # the end of duration to queue
                     end_time = cur_connection.start + cur_connection.duration
                     end_tuple = WorkloadTuple(
                         time=end_time, connection=cur_connection)
@@ -81,19 +81,8 @@ class RoutingPerformance:
                                            cur_connection.path))))
                 cur_connection.is_processed = True
             else:
-                # we've seen this before - must be time to pop it back off
+                # we've seen this before - must be time to restore resources
                 self.graph.remove_connection(cur_connection)
-
-        # TODO report durations here?
-        # main loop of program
-        # pop off item from queue
-        # if flag not set, attempt make connection
-        # calculate path
-        # attempt to put connection on graph
-        # if ok, add connection onto queue at duration (to remove)
-        # if not, request is blocked. discard and handle next one
-        # if flag set, we just need to remove this connection to free capacity
-        # repeat until empty graph
 
     def close_program(self):
         # print final statistics to terminal here

@@ -1,9 +1,10 @@
 # networks_ass2
-## How to add pathing algorithm
-- add new function to ```pathing_algorithms.py```
-- import new function in ```routing_performance.py``` line 3
-- change line 36 of ```routing_performance.py``` to use new function instead of ```shortest_path```
-- in ```VirtualConnection.fill_path``` check arguments are being used correctly in new function (```path_algorithm``` is your new algorithm function and is currently set to those of ```shortest_path``` - modify as needed)
+## Implementation
+- 2017 UNSW COMP3331 Assignment 2 Implementation by Alex Nguyen and Brian Lam
+## Structure
+- helpers contains
+- root directory contains ```report.xlsx``` (plots, data), ```report.pdf``` and main program, ```routing_performance.py```
+
 ## Run base assignment
 - Use packet rate of 1
 - SHP:
@@ -23,11 +24,16 @@ python -m routing_performance CIRCUIT LLP topology.txt workload.txt 1
 python -m pdb routing_performance.py CIRCUIT SDP topology.txt workload.txt 1
 ```
 
+## How to add pathing algorithm
+- add new function to ```pathing_algorithms.py```
+- import new function in ```routing_performance.py``` line 3
+- change line 36 of ```routing_performance.py``` to use new function instead of ```shortest_path```
+- in ```VirtualConnection.fill_path``` check arguments are being used correctly in new function (```path_algorithm``` is your new algorithm function and is currently set to those of ```shortest_path``` - modify as needed)
 
 ## Git commands 
 - Clone specific branch
 ```
-git clone -b master https://github.com/AlexN34/networks_ass2.git
+git clone -b master (git url)
 ```
 - Create new branch and push it on server side
 ```
@@ -43,16 +49,11 @@ git pull origin other_branch_name
 git push
 
 ```
-- Shit, need to go back in time
+- Oh-no, need to go back in time
 ```
 git log
 # pick commit hash number
 git checkout hash_number
 # you're now in detached head state, do below when you want to go back
 git checkout ^HEAD
-# ^ that's from memory, may or may not work lol
 ```
-# Structure
-- djikstra folder to be added for naive algo implementation
-- ds for datastructures and graphrep
-- report for documentation type stuff for submission

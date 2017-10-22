@@ -11,26 +11,28 @@
 #   average cumulative propagation delay per circuit: 120.54
 
 # CHECKLIST FOR PLACING STATS UPDATES:
-#
-#	STATISTIC 		 STATUS   INCREMENT LOCATION
-#	----------------------------------------------------------
-#   total_requests   = YES  : routing_performance.start_requests()
-#   total_pkts       = YES  : routing_performance.start_requests()
-#   pkt_success_num  = YES  : routing_performance.start_requests()
-#   pkt_success_rate = N/A  : [ calculated from existing stats ]
-#   pkt_blocked_num  = YES  : routing_performance.start_requests()
-#   pkt_blocked_rate = N/A  : [ calculated from existing stats ]
-#   circuit_success  = YES  : routing_performance.start_requests()
-#   total_hops       = YES  : routing_performance.start_requests()
-#   total_delay      = YES  : routing_performance.start_requests()
-#   ave_hops         = N/A  : [ calculated from existing stats ]
-#   ave_delay        = N/A  : [ calculated from existing stats ]
+"""
+STATISTIC 		 STATUS   INCREMENT LOCATION
+----------------------------------------------------------
+total_requests   = YES  : routing_performance.start_requests()
+total_pkts       = YES  : routing_performance.start_requests()
+pkt_success_num  = YES  : routing_performance.start_requests()
+pkt_success_rate = N/A  : [ calculated from existing stats ]
+pkt_blocked_num  = YES  : routing_performance.start_requests()
+pkt_blocked_rate = N/A  : [ calculated from existing stats ]
+circuit_success  = YES  : routing_performance.start_requests()
+total_hops       = YES  : routing_performance.start_requests()
+total_delay      = YES  : routing_performance.start_requests()
+ave_hops         = N/A  : [ calculated from existing stats ]
+ave_delay        = N/A  : [ calculated from existing stats ]
+"""
 
 
 class StatisticsManager:
     def __init__(self, network_scheme, packet_rate):
         self.total_requests = 0  # total VC requests
-        self.total_pkts = 0  # total pkts in VC = pkts per sec * request duration
+        # total pkts in VC = pkts per sec * request duration
+        self.total_pkts = 0
 
         self.pkt_success_num = 0  # success pkts = total - blocked
         self.pkt_success_rate = 0  # success rate = total - blocked / total
@@ -41,13 +43,11 @@ class StatisticsManager:
         self.circuit_success = 0  # success circuits
         self.total_hops = 0  # cumulative hops (successful)
         self.total_delay = 0  # cumulative prop delay (successful)
-        self.ave_hops = 0  # average hops = total hops / success circuits
-        self.ave_delay = 0  # average delay = total prop delay / success circuits
+        # average hops = total hops / success circuits
+        self.ave_hops = 0
+        # average delay = total prop delay / success circuits
+        self.ave_delay = 0
 
-        # TODO fill out
-        # calcaverages
-        # counthops(circuit_edges)
-        # manage num packets via routingperf's  packet rate
         self.network_scheme = network_scheme
         self.packet_rate = packet_rate
 
