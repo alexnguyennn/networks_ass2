@@ -31,12 +31,14 @@ class UpdateablePriorityQueue:
 
     # input in (priority, item)
     def update_priority(self, item_tuple):
-        if len(item_tuple) > 2:
+        if len(item_tuple) > 2 and isinstance(
+                item_tuple[0], int) and isinstance(item_tuple[1], str):
             raise AttributeError('expected tuple in the form (item, value)')
         update_flag = False
         for t in self.heap_list:
             if t[1] == item_tuple[1]:
                 self.heap_list.remove(t)
+                heapq.heapify(self.heap_list)
                 self.insert(item_tuple)
                 update_flag = True
         if not update_flag:

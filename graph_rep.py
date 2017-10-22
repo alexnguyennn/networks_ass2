@@ -73,7 +73,7 @@ class Graph:
             raise ValueError("tried to remove a connection not in graph")
         if self.debug:
             print(
-                "Just added connection with path: {} start: {} duration: {}, end: {}".
+                "Just removed connection with path: {} start: {} duration: {}, end: {}".
                 format(connection.path, connection.start, connection.duration,
                        connection.start + connection.duration))
         return True

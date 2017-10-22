@@ -66,3 +66,7 @@ def test_shortest_delay_txt_topology(graph_topology):
         graph_topology, 'A', 'O', path_type='SDP')
     assert result_path == ['A', 'B', 'I', 'J', 'K', 'N', 'O']
     assert result_delays == 235
+    result_path, result_delays = shortest_path(
+        graph_topology, 'I', 'C', path_type='SDP')
+    assert result_path == ['I', 'B', 'C']
+    assert result_delays == 180
