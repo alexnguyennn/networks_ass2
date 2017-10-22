@@ -1,4 +1,7 @@
 from helper_data_structures import UpdateablePriorityQueue
+import random as r
+r.seed()  # use system time as seed
+tie_break_chance = 0.5
 
 
 def shortest_path(graph, source, dest, path_type='SDP'):
@@ -40,7 +43,10 @@ def shortest_path(graph, source, dest, path_type='SDP'):
                 raise ValueError(
                     "Invalid value for path_type to shortest_path")
             # if new altered cost is less than a current minimum dist TO a neighbour, update
-            if altered_delay < dist[neighbour_v]:
+            if altered_delay <= dist[neighbour_v]:
+                if altered_delay == dist[neighbour_v] and r.random(
+                ) < tie_break_chance:
+                    continue  # randomly allow alternate path with equal cost to break tie
                 dist[neighbour_v] = altered_delay
                 prev[neighbour_v] = u
                 vertices.update_priority((dist[neighbour_v], neighbour_v))

@@ -26,6 +26,7 @@ class RoutingPerformance:
         self.packet_rate = PACKET_RATE
         self.statistics_manager = StatisticsManager(self.network_scheme,
                                                     self.packet_rate)
+        self.debug = False
 
     # init VC requests
 
@@ -64,7 +65,8 @@ class RoutingPerformance:
                     self.statistics_manager.update_stats(
                         "pkt_blocked", num_pkts)
                     # connection was blocked
-                    print('work loop: connection blocked!')
+                    if self.debug:
+                        print('work loop: connection blocked!')
                 cur_connection.is_processed = True
             else:
                 # we've seen this before - must be time to pop it back off

@@ -13,7 +13,7 @@ class Graph:
         self.cap = {}  # circuit capacity
         self.load = {}  # load = Active Circuits / Capacity
         self.virtual_connections = set()
-        self.debug = True
+        self.debug = False
 
     # add a new switch/router
     def add_node(self, node):
