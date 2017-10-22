@@ -40,7 +40,6 @@ class RoutingPerformance:
                 # increment total_pkts
                 num_pkts = int(cur_connection.duration) * int(PACKET_RATE)
                 self.statistics_manager.update_stats("packets", num_pkts)
-
                 status = cur_connection.fill_path(self.graph, shortest_path,
                                                   self.routing_scheme)
                 if status:  # found a suitable path!
