@@ -19,10 +19,6 @@ def shortest_path(graph, source, dest, path_type='SDP'):
     prev = {}
     for vertex in graph.nodes:
         dist[vertex] = float('inf')
-        # if path_type != 'LLP':
-        #     dist[vertex] = float('inf')
-        # else:
-        #     dist[vertex] = 0
         prev[vertex] = None  # set previous for a vertex when possible
         vertices.insert((dist[vertex], vertex))
     dist[source] = 0
@@ -41,11 +37,13 @@ def shortest_path(graph, source, dest, path_type='SDP'):
                 added_delay = graph.delays[(u, neighbour_v)]
                 altered_delay = u_cur_delay + added_delay
             elif path_type == 'LLP':
-                altered_delay = (len(graph.virtual_connections)) / (graph.cap[(
+                # altered_delay = (len(graph.virtual_connections)) / (graph.cap[(
+                #    u, neighbour_v)])
+                calc_delay = (len(graph.virtual_connections)) / (graph.cap[(
                     u, neighbour_v)])
-                # calc_delay = (len(graph.virtual_connections)) / (graph.cap[(
-                #     u, neighbour_v)])
-                # altered_delay = max(calc_delay, u_cur_delay)
+                # update the maximum load on this current path - first one will be zero
+                altered_delay = max(calc_delay, u_cur_delay)
+                # altered_delay = calc_delay
             else:
                 raise ValueError(
                     "Invalid value for path_type to shortest_path")
