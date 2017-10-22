@@ -12,9 +12,8 @@ class Graph:
         self.delays = {}  # link delays
         self.cap = {}  # circuit capacity
         self.max_cap = {}  # max circuit capacity
-        self.load = {}  # load = Active Circuits / Capacity
         self.virtual_connections = set()
-        self.debug = True
+        self.debug = False
 
     # add a new switch/router
     def add_node(self, node):
@@ -57,10 +56,6 @@ class Graph:
                         self.path_list_to_edges(connection.path),
                         self.get_edge_list_capacities(
                             self.path_list_to_edges(connection.path))))
-            # print(
-            #     "======================== UPDATED GRAPH STATUS ================"
-            # )
-            # self.show_graph()
         return True
 
     def remove_connection(self, connection):
@@ -148,7 +143,7 @@ class Graph:
         for n in self.nodes:
             print("router = {}".format(n))
             for e in self.edges[n]:
-                print("nb: {} | delay: {} | capacity: {} | load: {}" \
-                .format(e, self.delays[(n, e)], self.cap[(n, e)], None))
+                print("nb: {} | delay: {} | capacity: {} | max capacity: {}" \
+                .format(e, self.delays[(n, e)], self.cap[(n, e)], self.max_cap[(n, e)]))
             print("-----------------")
         return None
