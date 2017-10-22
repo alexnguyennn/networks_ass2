@@ -39,7 +39,9 @@ def shortest_path(graph, source, dest, path_type='SDP'):
             elif path_type == 'LLP':
                 # altered_delay = (len(graph.virtual_connections)) / (graph.cap[(
                 #    u, neighbour_v)])
-                calc_delay = (len(graph.virtual_connections)) / (graph.cap[(
+                active_connections = graph.max_cap[(
+                    u, neighbour_v)] - graph.cap[(u, neighbour_v)]
+                calc_delay = (active_connections) / (graph.max_cap[(
                     u, neighbour_v)])
                 # update the maximum load on this current path - first one will be zero
                 altered_delay = max(calc_delay, u_cur_delay)

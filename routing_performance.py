@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import math
 import sys
 from pathing_algorithms import shortest_path
 from graph_rep import Graph
@@ -26,7 +27,7 @@ class RoutingPerformance:
         self.packet_rate = PACKET_RATE
         self.statistics_manager = StatisticsManager(self.network_scheme,
                                                     self.packet_rate)
-        self.debug = True
+        self.debug = False
 
     # init VC requests
 
@@ -38,7 +39,8 @@ class RoutingPerformance:
                 # increment total_requests
                 self.statistics_manager.update_stats("request", 1)
                 # increment total_pkts
-                num_pkts = int(cur_connection.duration) * int(PACKET_RATE)
+                num_pkts = math.floor(
+                    float(cur_connection.duration) * int(PACKET_RATE))
                 self.statistics_manager.update_stats("packets", num_pkts)
                 status = cur_connection.fill_path(self.graph, shortest_path,
                                                   self.routing_scheme)
@@ -64,7 +66,19 @@ class RoutingPerformance:
                     self.statistics_manager.update_stats(
                         "pkt_blocked", num_pkts)
                     if self.debug:
-                        print('work loop: connection blocked!')
+                        print("""
+                                  ==========================
+                                  work loop: connection blocked!
+                                  path: {}
+                                  edges: {}
+                                  capacities: {}
+                                  ===========================
+                        """.format(cur_connection.path,
+                                   self.graph.path_list_to_edges(
+                                       cur_connection.path),
+                                   self.graph.get_edge_list_capacities(
+                                       self.graph.path_list_to_edges(
+                                           cur_connection.path))))
                 cur_connection.is_processed = True
             else:
                 # we've seen this before - must be time to pop it back off
