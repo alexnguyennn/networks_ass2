@@ -26,7 +26,7 @@ class RoutingPerformance:
         self.packet_rate = PACKET_RATE
         self.statistics_manager = StatisticsManager(self.network_scheme,
                                                     self.packet_rate)
-        self.debug = False
+        self.debug = True
 
     # init VC requests
 
