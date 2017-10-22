@@ -23,6 +23,8 @@ def test_path_to_edge_tuples(graph, graph_topology, graph_topology_simple):
     assert_path_edges(graph_topology, ['A', 'B', 'I', 'J', 'K', 'N', 'O'],
                       [('A', 'B'), ('B', 'I'), ('I', 'J'), ('J', 'K'),
                        ('K', 'N'), ('N', 'O')])
+    assert_path_edges(graph_topology, ['B', 'A', 'C', 'D', 'F'],
+                      [('B', 'A'), ('A', 'C'), ('C', 'D'), ('D', 'F')])
 
 
 def test_connections(graph):

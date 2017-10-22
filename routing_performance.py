@@ -43,7 +43,7 @@ class RoutingPerformance:
 
                 status = cur_connection.fill_path(self.graph, shortest_path,
                                                   self.routing_scheme)
-                if status:
+                if status:  # found a suitable path!
                     # increment successful pkt
                     self.statistics_manager.update_stats(
                         "pkt_success", num_pkts)
@@ -60,11 +60,10 @@ class RoutingPerformance:
                     end_tuple = WorkloadTuple(
                         time=end_time, connection=cur_connection)
                     self.workload.add(end_tuple)
-                else:
+                else:  # connection was blocked
                     # increment blocked pkt
                     self.statistics_manager.update_stats(
                         "pkt_blocked", num_pkts)
-                    # connection was blocked
                     if self.debug:
                         print('work loop: connection blocked!')
                 cur_connection.is_processed = True

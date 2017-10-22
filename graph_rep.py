@@ -33,11 +33,6 @@ class Graph:
         self.cap[(to_n, from_n)] = capacity
 
     def add_connection(self, connection):
-        # TODO - accept virtual connection class instead?
-        # TODO fill out. returns boolean based on success/blocked
-        # maybe return a unique id instead?
-        # for node in connection_path:
-        # 3.
         connection_edges = self.path_list_to_edges(connection.path)
         cap_list = self.get_edge_list_capacities(connection_edges)
         for cap in cap_list:
@@ -58,10 +53,6 @@ class Graph:
         return True
 
     def remove_connection(self, connection):
-        # TODO fill out. returns boolean based on success/blocked
-        # maybe pass in unique id instead?
-        # 4.
-        # TODO check if THIS specific connection is on path first?
         if connection not in self.virtual_connections:
             return False
         connection_edges = self.path_list_to_edges(connection.path)
